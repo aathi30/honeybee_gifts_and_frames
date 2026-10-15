@@ -1,0 +1,1407 @@
+{
+  "info": {
+    "name": "Honeybee Frame Shop API",
+    "description": "Configure baseUrl and admin credentials locally. Cookies are stored by Postman. Unsafe requests fetch a fresh CSRF token automatically. Multipart JSON parts must use application/json. Example responses are illustrative and not production data.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/api"
+    },
+    {
+      "key": "adminUsername",
+      "value": ""
+    },
+    {
+      "key": "adminPassword",
+      "value": ""
+    },
+    {
+      "key": "frameId",
+      "value": ""
+    },
+    {
+      "key": "imageId",
+      "value": ""
+    },
+    {
+      "key": "categoryId",
+      "value": ""
+    },
+    {
+      "key": "categorySlug",
+      "value": ""
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (['POST','PUT','DELETE'].includes(pm.request.method)) {",
+          "  pm.sendRequest({url:pm.variables.get('baseUrl')+'/auth/csrf',method:'GET'}, function(error,response) {",
+          "    if(error || response.code !== 200) throw new Error('Could not fetch CSRF token');",
+          "    const csrf=response.json();",
+          "    pm.request.headers.upsert({key:csrf.headerName,value:csrf.token});",
+          "  });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Public catalog",
+      "item": [
+        {
+          "name": "All frames",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/frames?page=0&size=12&sort=newest",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "frames"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "12"
+                },
+                {
+                  "key": "sort",
+                  "value": "newest"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/frames?page=0&size=12&sort=newest",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "frames"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "12"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "newest"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"name\": \"Example Wooden Frame\",\n      \"slug\": \"example-wooden-frame\",\n      \"description\": \"Example only; not seeded into production.\",\n      \"price\": 2500,\n      \"size\": \"8 x 12 inches\",\n      \"available\": true,\n      \"featured\": true,\n      \"category\": {\n        \"id\": 1,\n        \"name\": \"Wooden Frames\",\n        \"slug\": \"wooden-frames-example\",\n        \"description\": \"Natural finishes\",\n        \"imageUrl\": null\n      },\n      \"images\": [\n        {\n          \"id\": 1,\n          \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n          \"displayOrder\": 0\n        }\n      ],\n      \"createdAt\": \"2026-10-13T00:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 12,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Frame details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/frames/{{frameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "frames",
+                "{{frameId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/frames/{{frameId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "frames",
+                    "{{frameId}}"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Example Wooden Frame\",\n  \"slug\": \"example-wooden-frame\",\n  \"description\": \"Example only; not seeded into production.\",\n  \"price\": 2500,\n  \"size\": \"8 x 12 inches\",\n  \"available\": true,\n  \"featured\": true,\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Wooden Frames\",\n    \"slug\": \"wooden-frames-example\",\n    \"description\": \"Natural finishes\",\n    \"imageUrl\": null\n  },\n  \"images\": [\n    {\n      \"id\": 1,\n      \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n      \"displayOrder\": 0\n    }\n  ],\n  \"createdAt\": \"2026-10-13T00:00:00Z\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data=pm.response.json(); if(data.images?.length) pm.collectionVariables.set('imageId',data.images[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Featured frames",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/frames/featured",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "frames",
+                "featured"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/frames/featured",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "frames",
+                    "featured"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"name\": \"Example Wooden Frame\",\n      \"slug\": \"example-wooden-frame\",\n      \"description\": \"Example only; not seeded into production.\",\n      \"price\": 2500,\n      \"size\": \"8 x 12 inches\",\n      \"available\": true,\n      \"featured\": true,\n      \"category\": {\n        \"id\": 1,\n        \"name\": \"Wooden Frames\",\n        \"slug\": \"wooden-frames-example\",\n        \"description\": \"Natural finishes\",\n        \"imageUrl\": null\n      },\n      \"images\": [\n        {\n          \"id\": 1,\n          \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n          \"displayOrder\": 0\n        }\n      ],\n      \"createdAt\": \"2026-10-13T00:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 12,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Search frames",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/frames/search?keyword=wooden&sort=price-asc",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "frames",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "keyword",
+                  "value": "wooden"
+                },
+                {
+                  "key": "sort",
+                  "value": "price-asc"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/frames/search?keyword=wooden&sort=price-asc",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "frames",
+                    "search"
+                  ],
+                  "query": [
+                    {
+                      "key": "keyword",
+                      "value": "wooden"
+                    },
+                    {
+                      "key": "sort",
+                      "value": "price-asc"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"name\": \"Example Wooden Frame\",\n      \"slug\": \"example-wooden-frame\",\n      \"description\": \"Example only; not seeded into production.\",\n      \"price\": 2500,\n      \"size\": \"8 x 12 inches\",\n      \"available\": true,\n      \"featured\": true,\n      \"category\": {\n        \"id\": 1,\n        \"name\": \"Wooden Frames\",\n        \"slug\": \"wooden-frames-example\",\n        \"description\": \"Natural finishes\",\n        \"imageUrl\": null\n      },\n      \"images\": [\n        {\n          \"id\": 1,\n          \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n          \"displayOrder\": 0\n        }\n      ],\n      \"createdAt\": \"2026-10-13T00:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 12,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "All categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "categories"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"id\": 1,\n    \"name\": \"Wooden Frames\",\n    \"slug\": \"wooden-frames-example\",\n    \"description\": \"Natural finishes\",\n    \"imageUrl\": null\n  }\n]"
+            }
+          ]
+        },
+        {
+          "name": "Category frames",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/categories/{{categorySlug}}/frames",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "categories",
+                "{{categorySlug}}",
+                "frames"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/categories/{{categorySlug}}/frames",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "categories",
+                    "{{categorySlug}}",
+                    "frames"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"content\": [\n    {\n      \"id\": 1,\n      \"name\": \"Example Wooden Frame\",\n      \"slug\": \"example-wooden-frame\",\n      \"description\": \"Example only; not seeded into production.\",\n      \"price\": 2500,\n      \"size\": \"8 x 12 inches\",\n      \"available\": true,\n      \"featured\": true,\n      \"category\": {\n        \"id\": 1,\n        \"name\": \"Wooden Frames\",\n        \"slug\": \"wooden-frames-example\",\n        \"description\": \"Natural finishes\",\n        \"imageUrl\": null\n      },\n      \"images\": [\n        {\n          \"id\": 1,\n          \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n          \"displayOrder\": 0\n        }\n      ],\n      \"createdAt\": \"2026-10-13T00:00:00Z\"\n    }\n  ],\n  \"page\": 0,\n  \"size\": 12,\n  \"totalElements\": 1,\n  \"totalPages\": 1\n}"
+            }
+          ]
+        },
+        {
+          "name": "Public shop settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/settings/public",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "settings",
+                "public"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/settings/public",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "settings",
+                    "public"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shopName\": \"Honeybee Frame Shop\",\n  \"whatsappNumber\": \"\",\n  \"phoneNumber\": \"\",\n  \"address\": \"\",\n  \"openingHours\": \"\",\n  \"facebookUrl\": \"\",\n  \"instagramUrl\": \"\",\n  \"mapsUrl\": \"\",\n  \"heroTitle\": \"Make memories feel at home.\",\n  \"heroSubtitle\": \"Find a frame for your favourite moment.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/health",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "health"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"UP\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "CSRF token",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/csrf",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "csrf"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/csrf",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "csrf"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"headerName\": \"X-CSRF-TOKEN\",\n  \"token\": \"TOKEN_RETURNED_BY_SERVER\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Admin login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/login",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "login"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"{{adminUsername}}\",\n  \"password\": \"{{adminPassword}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"username\": \"YOUR_ADMIN_USERNAME\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Current admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/me",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "me"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"username\": \"YOUR_ADMIN_USERNAME\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/auth/logout",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "auth",
+                    "logout"
+                  ]
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin frames",
+      "item": [
+        {
+          "name": "Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/dashboard",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "dashboard"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/dashboard",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "dashboard"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"totalFrames\": 1,\n  \"totalCategories\": 1,\n  \"availableFrames\": 1,\n  \"unavailableFrames\": 0,\n  \"recentFrames\": [\n    {\n      \"id\": 1,\n      \"name\": \"Example Wooden Frame\",\n      \"slug\": \"example-wooden-frame\",\n      \"description\": \"Example only; not seeded into production.\",\n      \"price\": 2500,\n      \"size\": \"8 x 12 inches\",\n      \"available\": true,\n      \"featured\": true,\n      \"category\": {\n        \"id\": 1,\n        \"name\": \"Wooden Frames\",\n        \"slug\": \"wooden-frames-example\",\n        \"description\": \"Natural finishes\",\n        \"imageUrl\": null\n      },\n      \"images\": [\n        {\n          \"id\": 1,\n          \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n          \"displayOrder\": 0\n        }\n      ],\n      \"createdAt\": \"2026-10-13T00:00:00Z\"\n    }\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create frame — select local image files",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/frames",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "frames"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "frame",
+                  "value": "{\"name\":\"Example Wooden Frame\",\"description\":\"Sample API request\",\"categoryId\":{{categoryId}},\"price\":\"2500.00\",\"size\":\"8 x 12 inches\",\"available\":true,\"featured\":true}",
+                  "type": "text",
+                  "contentType": "application/json"
+                },
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/frames",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "frames"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "frame",
+                      "value": "{\"name\":\"Example Wooden Frame\",\"description\":\"Sample API request\",\"categoryId\":{{categoryId}},\"price\":\"2500.00\",\"size\":\"8 x 12 inches\",\"available\":true,\"featured\":true}",
+                      "type": "text",
+                      "contentType": "application/json"
+                    },
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Example Wooden Frame\",\n  \"slug\": \"example-wooden-frame\",\n  \"description\": \"Example only; not seeded into production.\",\n  \"price\": 2500,\n  \"size\": \"8 x 12 inches\",\n  \"available\": true,\n  \"featured\": true,\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Wooden Frames\",\n    \"slug\": \"wooden-frames-example\",\n    \"description\": \"Natural finishes\",\n    \"imageUrl\": null\n  },\n  \"images\": [\n    {\n      \"id\": 1,\n      \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n      \"displayOrder\": 0\n    }\n  ],\n  \"createdAt\": \"2026-10-13T00:00:00Z\"\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(pm.response.code===201) pm.collectionVariables.set('frameId',pm.response.json().id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update frame",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/frames/{{frameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "frames",
+                "{{frameId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Example Wooden Frame\",\n  \"description\": \"Sample API request\",\n  \"categoryId\": {{categoryId}},\n  \"price\": \"2500.00\",\n  \"size\": \"8 x 12 inches\",\n  \"available\": true,\n  \"featured\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/frames/{{frameId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "frames",
+                    "{{frameId}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Example Wooden Frame\",\n  \"description\": \"Sample API request\",\n  \"categoryId\": {{categoryId}},\n  \"price\": \"2500.00\",\n  \"size\": \"8 x 12 inches\",\n  \"available\": true,\n  \"featured\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Example Wooden Frame\",\n  \"slug\": \"example-wooden-frame\",\n  \"description\": \"Example only; not seeded into production.\",\n  \"price\": 2500,\n  \"size\": \"8 x 12 inches\",\n  \"available\": true,\n  \"featured\": true,\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Wooden Frames\",\n    \"slug\": \"wooden-frames-example\",\n    \"description\": \"Natural finishes\",\n    \"imageUrl\": null\n  },\n  \"images\": [\n    {\n      \"id\": 1,\n      \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n      \"displayOrder\": 0\n    }\n  ],\n  \"createdAt\": \"2026-10-13T00:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Add images — select local files",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/frames/{{frameId}}/images",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "frames",
+                "{{frameId}}",
+                "images"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/frames/{{frameId}}/images",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "frames",
+                    "{{frameId}}",
+                    "images"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "images",
+                      "type": "file",
+                      "src": []
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Example Wooden Frame\",\n  \"slug\": \"example-wooden-frame\",\n  \"description\": \"Example only; not seeded into production.\",\n  \"price\": 2500,\n  \"size\": \"8 x 12 inches\",\n  \"available\": true,\n  \"featured\": true,\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Wooden Frames\",\n    \"slug\": \"wooden-frames-example\",\n    \"description\": \"Natural finishes\",\n    \"imageUrl\": null\n  },\n  \"images\": [\n    {\n      \"id\": 1,\n      \"imageUrl\": \"https://res.cloudinary.com/YOUR_CLOUD/image/upload/YOUR_IMAGE.png\",\n      \"displayOrder\": 0\n    }\n  ],\n  \"createdAt\": \"2026-10-13T00:00:00Z\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Remove one image",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/frames/{{frameId}}/images/{{imageId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "frames",
+                "{{frameId}}",
+                "images",
+                "{{imageId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/frames/{{frameId}}/images/{{imageId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "frames",
+                    "{{frameId}}",
+                    "images",
+                    "{{imageId}}"
+                  ]
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        },
+        {
+          "name": "Delete frame",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/frames/{{frameId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "frames",
+                "{{frameId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/frames/{{frameId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "frames",
+                    "{{frameId}}"
+                  ]
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin categories",
+      "item": [
+        {
+          "name": "Create category",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "categories"
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "category",
+                  "value": "{\"name\":\"Example Wooden Frames\",\"description\":\"Sample request\"}",
+                  "type": "text",
+                  "contentType": "application/json"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/categories",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "categories"
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "category",
+                      "value": "{\"name\":\"Example Wooden Frames\",\"description\":\"Sample request\"}",
+                      "type": "text",
+                      "contentType": "application/json"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "src": [],
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Wooden Frames\",\n  \"slug\": \"wooden-frames-example\",\n  \"description\": \"Natural finishes\",\n  \"imageUrl\": null\n}"
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if(pm.response.code===201){const data=pm.response.json();pm.collectionVariables.set('categoryId',data.id);pm.collectionVariables.set('categorySlug',data.slug);}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update category",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories/{{categoryId}}?removeImage=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "categories",
+                "{{categoryId}}"
+              ],
+              "query": [
+                {
+                  "key": "removeImage",
+                  "value": "false"
+                }
+              ]
+            },
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "category",
+                  "value": "{\"name\":\"Example Wooden Frames\",\"description\":\"Sample request\"}",
+                  "type": "text",
+                  "contentType": "application/json"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/categories/{{categoryId}}?removeImage=false",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "categories",
+                    "{{categoryId}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "removeImage",
+                      "value": "false"
+                    }
+                  ]
+                },
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "category",
+                      "value": "{\"name\":\"Example Wooden Frames\",\"description\":\"Sample request\"}",
+                      "type": "text",
+                      "contentType": "application/json"
+                    },
+                    {
+                      "key": "image",
+                      "type": "file",
+                      "src": [],
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": 1,\n  \"name\": \"Wooden Frames\",\n  \"slug\": \"wooden-frames-example\",\n  \"description\": \"Natural finishes\",\n  \"imageUrl\": null\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete empty category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/categories/{{categoryId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "categories",
+                "{{categoryId}}"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/categories/{{categoryId}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "categories",
+                    "{{categoryId}}"
+                  ]
+                }
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [],
+              "body": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin shop settings",
+      "item": [
+        {
+          "name": "Get settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "settings"
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/settings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "settings"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shopName\": \"Honeybee Frame Shop\",\n  \"whatsappNumber\": \"\",\n  \"phoneNumber\": \"\",\n  \"address\": \"\",\n  \"openingHours\": \"\",\n  \"facebookUrl\": \"\",\n  \"instagramUrl\": \"\",\n  \"mapsUrl\": \"\",\n  \"heroTitle\": \"Make memories feel at home.\",\n  \"heroSubtitle\": \"Find a frame for your favourite moment.\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/settings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "settings"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shopName\": \"Honeybee Frame Shop\",\n  \"whatsappNumber\": \"\",\n  \"phoneNumber\": \"\",\n  \"address\": \"\",\n  \"openingHours\": \"\",\n  \"facebookUrl\": \"\",\n  \"instagramUrl\": \"\",\n  \"mapsUrl\": \"\",\n  \"heroTitle\": \"Make memories feel at home.\",\n  \"heroSubtitle\": \"Find a frame for your favourite moment.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Example response (illustrative)",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/admin/settings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "admin",
+                    "settings"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shopName\": \"Honeybee Frame Shop\",\n  \"whatsappNumber\": \"\",\n  \"phoneNumber\": \"\",\n  \"address\": \"\",\n  \"openingHours\": \"\",\n  \"facebookUrl\": \"\",\n  \"instagramUrl\": \"\",\n  \"mapsUrl\": \"\",\n  \"heroTitle\": \"Make memories feel at home.\",\n  \"heroSubtitle\": \"Find a frame for your favourite moment.\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"shopName\": \"Honeybee Frame Shop\",\n  \"whatsappNumber\": \"\",\n  \"phoneNumber\": \"\",\n  \"address\": \"\",\n  \"openingHours\": \"\",\n  \"facebookUrl\": \"\",\n  \"instagramUrl\": \"\",\n  \"mapsUrl\": \"\",\n  \"heroTitle\": \"Make memories feel at home.\",\n  \"heroSubtitle\": \"Find a frame for your favourite moment.\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
