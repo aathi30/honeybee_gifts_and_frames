@@ -24,7 +24,7 @@ export function Logo({ small = false }) {
         width="2048"
         height="2048"
       />
-      <span className="brand-caption">Honey Bee Gifts &amp; Frame</span>
+      <span className="brand-caption">HoneyBee Gifts &amp; Designs</span>
     </span>
   );
 }
